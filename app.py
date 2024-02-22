@@ -54,42 +54,30 @@ def inputprmt(txt, jd):
         3)Profile Summary
         4)Recommendations (if applicable)
         """
-
-
-
-
-
-
-
-
-
-
-
-
+        
 class App:
     def __init__(self):
-        st.title("​ATS_Tracking_AI")
-        jd=st.text_area("Paste the Job Description", height=200)
-        uploadedfile = st.file_uploader("Upload Your Resume", type="pdf", help="Please Upload the file here")
+        st.title("ATS Tracking AI")
+        jd = st.text_area("Paste the job description", height=200)
+        files = st.file_uploader("Upload Resume files", type="pdf", accept_multiple_files=True)
         submit = st.button("Submit")
-
+        
         if submit:
-            if uploadedfile is not None:
-                with st.spinner('Analyzing the resume...'):
-                    text=input_pdf_txt(uploadedfile)
-                    data = inputprmt(text,jd)
-                    # print(data)
-                    response = get_gemini_response(data)    
-                    # response = get_openai_response(input_prompt)
-                    st.write(response)
-                    print(response)        
-
-                    st.sidebar.title("Resume Analysis")
-                    match_percentage_index = response.find("Match Percentage:")
-                    if match_percentage_index != -1:
-                        match_percentage_str = response[match_percentage_index:].split()[2]
-                        percentage_value = match_percentage_str.rstrip('%')    
-                    st.sidebar.table({"Resume Name": [uploadedfile.name], "Match Percentage": [percentage_value]}) 
-
-
-app= App()
+            if files is not None:
+                st.sidebar.title("Resume analysis")
+                i=1
+                
+                for file in files:
+                    with st.spinner(f"Analyzing for {file.name}"):
+                        text = input_pdf_txt(file)
+                        data = inputprmt(text, jd)
+                        response = get_gemini_response(data)
+                        st.header(file.name)
+                        st.write(response)
+                        perc_index = response.find("Match Percentage:")
+                        perc_str = response[perc_index:].split()[2]
+                        # pervalue = perc_str.rstrip("%")
+                        st.sidebar.table({"Sr no.":[i], "File name":[file.name], "Match Percentage":[perc_str]})
+                        i+=1
+                        
+app = App()
