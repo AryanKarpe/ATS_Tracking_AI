@@ -85,8 +85,11 @@ class App:
                     print(response)        
 
                     st.sidebar.title("Resume Analysis")
-                    match_percentage = re.search(r"Match Percentage: (\d+)%", response)
-                    st.sidebar.table({"Resume Name": [uploadedfile.name], "Match Percentage": [match_percentage]}) 
-                    
-                    
+                    match_percentage_index = response.find("Match Percentage:")
+                    if match_percentage_index != -1:
+                        match_percentage_str = response[match_percentage_index:].split()[2]
+                        percentage_value = match_percentage_str.rstrip('%')    
+                    st.sidebar.table({"Resume Name": [uploadedfile.name], "Match Percentage": [percentage_value]}) 
+
+
 app= App()
