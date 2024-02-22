@@ -1,0 +1,16 @@
+Start
+|
+V
+Read PDF using PyPDF2
+|
+V
+Convert PDF text
+|
+V
+Call API give text
+|
+V
+Receive response from API
+|
+V
+End
